@@ -9,3 +9,4 @@ services:
     - 2345:2345
     volumes:
     - ../server:/app/file-share/server:cached
+    - ../share_dir:/app/file-share/share_dir:cached
