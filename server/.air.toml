@@ -1,0 +1,3 @@
+[build]
+cmd = "go build -o ./tmp/app ."
+full_bin = "dlv exec --continue --accept-multiclient --listen=:2345 --headless=true --api-version=2 ./tmp/app"
