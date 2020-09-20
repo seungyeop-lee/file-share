@@ -7,8 +7,9 @@ services:
     ports:
       - 8080:8080
       - 2345:2345
-    env_file:
-      - .env
+    environment:
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER}
+      - BASIC_AUTH_PASS=${BASIC_AUTH_PASS}
     volumes:
       - ../server:/app/file-share/server:cached
       - ${SHARE_DIR}:/app/file-share/share_dir:cached
