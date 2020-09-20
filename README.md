@@ -11,6 +11,9 @@
 - basic auth
   - user: `test`
   - pass: `test`
+- port
+  - server: `65001`
+  - debug: `12345`
 - 설정은 `.env`을 통해 변경가능하다.
 
 ## 실행방법
