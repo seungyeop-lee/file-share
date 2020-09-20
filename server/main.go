@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/render"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/asticode/go-astisub"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 )
 
 const (
@@ -31,10 +34,14 @@ func main() {
 		if err := filepath.Walk(
 			shareDir,
 			func(path string, info os.FileInfo, err error) error {
-				if !info.IsDir() {
-					relPath, _ := filepath.Rel(shareDir, path)
-					files = append(files, relPath)
+				if info.IsDir() {
+					return nil
 				}
+				if ext := filepath.Ext(path); ext == ".srt" || ext == ".smi" {
+					return nil
+				}
+				relPath, _ := filepath.Rel(shareDir, path)
+				files = append(files, relPath)
 				return nil
 			},
 		); err != nil {
@@ -46,16 +53,44 @@ func main() {
 		})
 	})
 
-	e.GET("/streaming", func(c *gin.Context) {
-		path := c.Query("path")
-		c.File(filepath.Join(shareDir, path))
-	})
-
 	e.GET("/download", func(c *gin.Context) {
 		path := c.Query("path")
 		fileName := filepath.Base(path)
 		c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
 		c.File(filepath.Join(shareDir, path))
+	})
+
+	e.GET("/streaming", func(c *gin.Context) {
+		path := c.Query("path")
+		c.File(filepath.Join(shareDir, path))
+	})
+
+	e.GET("/play", func(c *gin.Context) {
+		path := c.Query("path")
+		c.HTML(http.StatusOK, "play.gohtml", gin.H{
+			"path": path,
+		})
+	})
+
+	e.GET("/sub", func(c *gin.Context) {
+		path := c.Query("path")
+		ext := filepath.Ext(path)
+
+		smiPath := filepath.Join(shareDir, strings.Replace(path, ext, ".smi", -1))
+		if sub, err := astisub.OpenFile(smiPath); err == nil {
+			err = sub.WriteToWebVTT(c.Writer)
+			c.Status(http.StatusOK)
+			return
+		}
+
+		srtPath := filepath.Join(shareDir, strings.Replace(path, ext, ".srt", -1))
+		if sub, err := astisub.OpenFile(srtPath); err == nil {
+			err = sub.WriteToWebVTT(c.Writer)
+			c.Status(http.StatusOK)
+			return
+		}
+
+		c.Status(http.StatusInternalServerError)
 	})
 
 	if err := e.Run(":8080"); err != nil {

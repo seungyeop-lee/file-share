@@ -5,8 +5,10 @@
     <title>FileList</title>
 </head>
 <body>
+<ul>
 {{range .files}}
-    <a href="streaming?path={{.}}">{{.}}</a> <a href="download?path={{.}}">다운로드</a><br>
+    <li><a href="play?path={{.}}">{{.}}</a> <a href="download?path={{.}}">다운로드</a></li>
 {{end}}
+</ul>
 </body>
 </html>
