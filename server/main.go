@@ -9,10 +9,17 @@ import (
 	"path/filepath"
 )
 
-const shareDir = "/app/file-share/share_dir"
+const (
+	shareDir      = "/app/file-share/share_dir"
+	basicAuthUser = "BASIC_AUTH_USER"
+	basicAuthPass = "BASIC_AUTH_PASS"
+)
 
 func main() {
 	e := gin.Default()
+	e.Use(gin.BasicAuth(gin.Accounts{
+		os.Getenv(basicAuthUser): os.Getenv(basicAuthPass),
+	}))
 
 	e.GET("/ping", func(c *gin.Context) {
 		c.Render(http.StatusOK, render.String{Format: "Pong"})

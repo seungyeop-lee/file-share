@@ -3,10 +3,12 @@ services:
   file-share-server:
     image: seungyeop-lee/file-share-server:latest
     build:
-     context: ../server
+      context: ../server
     ports:
-    - 8080:8080
-    - 2345:2345
+      - 8080:8080
+      - 2345:2345
+    env_file:
+      - .env
     volumes:
-    - ../server:/app/file-share/server:cached
-    - ../share_dir:/app/file-share/share_dir:cached
+      - ../server:/app/file-share/server:cached
+      - ${SHARE_DIR}:/app/file-share/share_dir:cached
