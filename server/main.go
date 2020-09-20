@@ -40,14 +40,14 @@ func main() {
 			c.Render(http.StatusInternalServerError, render.String{Format: "can't find share dir"})
 			return
 		}
-		c.JSON(http.StatusOK, files)
+		c.IndentedJSON(http.StatusOK, files)
 	})
 
-	e.GET("/download/:path", func(c *gin.Context) {
-		path := c.Param("path")
+	e.GET("/download", func(c *gin.Context) {
+		path := c.Query("path")
 		fileName := filepath.Base(path)
-		c.File(filepath.Join(shareDir, path))
 		c.Header("Content-Disposition", fmt.Sprintf(`Content-Disposition; filename="%s"`, fileName))
+		c.File(filepath.Join(shareDir, path))
 	})
 
 	if err := e.Run(":8080"); err != nil {
