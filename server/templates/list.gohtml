@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>FileList</title>
 </head>
 <body>
 {{range .files}}
-    <a href="download?path={{.}}">{{.}}</a><br>
+    <a href="streaming?path={{.}}">{{.}}</a> <a href="download?path={{.}}">다운로드</a><br>
 {{end}}
 </body>
 </html>

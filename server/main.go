@@ -46,10 +46,15 @@ func main() {
 		})
 	})
 
+	e.GET("/streaming", func(c *gin.Context) {
+		path := c.Query("path")
+		c.File(filepath.Join(shareDir, path))
+	})
+
 	e.GET("/download", func(c *gin.Context) {
 		path := c.Query("path")
 		fileName := filepath.Base(path)
-		c.Header("Content-Disposition", fmt.Sprintf(`Content-Disposition; filename="%s"`, fileName))
+		c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
 		c.File(filepath.Join(shareDir, path))
 	})
 
