@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FileList</title>
+</head>
+<body>
+{{range .files}}
+    <a href="download?path={{.}}">{{.}}</a><br>
+{{end}}
+</body>
+</html>

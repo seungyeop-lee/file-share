@@ -20,6 +20,7 @@ func main() {
 	e.Use(gin.BasicAuth(gin.Accounts{
 		os.Getenv(basicAuthUser): os.Getenv(basicAuthPass),
 	}))
+	e.LoadHTMLGlob("templates/*")
 
 	e.GET("/ping", func(c *gin.Context) {
 		c.Render(http.StatusOK, render.String{Format: "Pong"})
@@ -40,7 +41,9 @@ func main() {
 			c.Render(http.StatusInternalServerError, render.String{Format: "can't find share dir"})
 			return
 		}
-		c.IndentedJSON(http.StatusOK, files)
+		c.HTML(http.StatusOK, "list.gohtml", gin.H{
+			"files": files,
+		})
 	})
 
 	e.GET("/download", func(c *gin.Context) {
